@@ -41,9 +41,9 @@ class MyApp extends StatelessWidget {
       //choose what to run
       // home: const HomeScreen(),
       // home: const CheckoutScreen(),
-      // home: const CartScreen(),
+      home: const CartScreen(),
       // home: const OrdersScreen(),
-      home: const OrdersHistoryScreen(),
+      // home: const OrdersHistoryScreen(),
     );
   }
 }

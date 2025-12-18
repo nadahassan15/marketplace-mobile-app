@@ -503,4 +503,5 @@ class _FaqItemState extends State<FaqItem> {
       ),
     );
   }
+  
 }

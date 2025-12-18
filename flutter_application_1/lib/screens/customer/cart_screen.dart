@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
+import '../../widgets/cart/cart_item_card.dart';
 import 'home_screen.dart';
 import 'checkout_screen.dart';
 
@@ -24,99 +25,11 @@ class CartScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final item = cart.items[index];
 
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.grey[300],
-                            ),
-                            child: const Icon(Icons.image),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item.name,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Color: ${item.color}',
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'EGP ${item.price.toStringAsFixed(0)}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                                          color: Colors.grey.shade400,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () =>
-                                                cart.decreaseQty(item.id),
-                                            child: const Icon(
-                                              Icons.remove,
-                                              size: 18,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Text('${item.quantity}'),
-                                          const SizedBox(width: 8),
-                                          GestureDetector(
-                                            onTap: () =>
-                                                cart.increaseQty(item.id),
-                                            child: const Icon(
-                                              Icons.add,
-                                              size: 18,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  return CartItemCard(
+                    item: item,
+                    onAdd: () => cart.increaseQty(item.id),
+                    onRemove: () => cart.decreaseQty(item.id),
+                    onDelete: () => cart.removeFromCart(item.id),
                   );
                 },
               ),
@@ -126,7 +39,6 @@ class CartScreen extends StatelessWidget {
           ],
         ),
       ),
-
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(

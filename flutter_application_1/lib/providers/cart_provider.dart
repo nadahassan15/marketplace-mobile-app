@@ -4,23 +4,31 @@ import '../models/cart_item_model.dart';
 class CartProvider extends ChangeNotifier {
   //TEMP DATA
   final List<CartItem> _items = [
-    CartItem(
-      id: '1',
-      name: 'GOLOCAL Hoodie',
-      price: 750,
-      color: 'Black',
-      quantity: 1,
-      // imageUrl: null, image: '', 
-    ),
-    CartItem(
-      id: '2',
-      name: 'Relaxed Fleece Sweatshirt',
-      price: 1100,
-      color: 'Grey',
-      quantity: 2,
-      // imageUrl: null, image: '',
-    ),
-  ];
+  CartItem(
+    id: '1',
+    name: 'Basic Sweatshirt',
+    price: 850,
+    color: 'Green',
+    quantity: 1,
+    image: 'assets/images/sweatshirt.png',
+  ),
+  CartItem(
+    id: '2',
+    name: 'Mid-Rise Straight Leg Denim',
+    price: 1350,
+    color: 'Dark Blue',
+    quantity: 2,
+    image: 'assets/images/denim.png',
+  ),
+  CartItem(
+    id: '3',
+    name: 'Full Length Coat',
+    price: 2000,
+    color: 'Black',
+    quantity: 1,
+    image: 'assets/images/coat.png',
+  ),
+];
 
   List<CartItem> get items => _items;
 
@@ -58,3 +66,4 @@ class CartProvider extends ChangeNotifier {
     return _items.fold(0, (sum, item) => sum + (item.price * item.quantity));
   }
 }
+
