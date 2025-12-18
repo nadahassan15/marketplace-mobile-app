@@ -1,1 +1,507 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/app_layout.dart';
+import 'package:flutter_application_1/widgets/footer.dart';
+import 'package:flutter_application_1/screens/static/about_us_page.dart';
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppLayout(
+      drawer: const _MainMenuDrawer(),
+
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // FIRST IMAGE / COLLECTION
+              Container(
+                margin: const EdgeInsets.all(16),
+                height: 260,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.grey.shade300,
+                ),
+                child: const Center(
+                  child: Text(
+                    'IMAGE / COLLECTION',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+
+              //BUTTONS
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: const [
+                    _TopButton('NEW ARRIVALS'),
+                    SizedBox(width: 12),
+                    _TopButton('BEST SELLERS'),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 32),
+
+              // ================= OLD FEMALE / MALE COLLECTIONS (COMMENTED OUT) =================
+              // const Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 16),
+              //   child: Text(
+              //     'FEMALE COLLECTIONS',
+              //     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              //   ),
+              // ),
+              // const SizedBox(height: 16),
+              // _CollectionRow(),
+              //
+              // const SizedBox(height: 32),
+              //
+              // const Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 16),
+              //   child: Text(
+              //     'MALE COLLECTIONS',
+              //     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              //   ),
+              // ),
+              // const SizedBox(height: 16),
+              // _CollectionRow(),
+
+              // ================= NEW WOMEN / MEN SECTIONS =================
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'COLLECTIONS',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SizedBox(
+                  height: 200,
+                  child: Row(
+                    children: const [
+                      Expanded(child: _GenderTile(title: 'WOMEN')),
+                      SizedBox(width: 12),
+                      Expanded(child: _GenderTile(title: 'MEN')),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 32),
+
+              _SectionHeader('EVERYDAY FITS'),
+              _ProductsHorizontal(),
+
+              const SizedBox(height: 32),
+
+              _SectionHeader('RELAXED FITS'),
+              _ProductsHorizontal(),
+
+              const SizedBox(height: 32),
+
+              _SectionHeader('SHOP HOODIES'),
+              _ProductsHorizontal(),
+
+              const SizedBox(height: 32),
+
+              // ================= FAQ =================
+              const Center(
+                child: Text(
+                  'FAQ',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              FaqItem(
+                title: 'What is GoLocal?',
+                child: RichText(
+                  text: TextSpan(
+                    style: const TextStyle(color: Colors.black87, height: 1.5),
+                    children: [
+                      const TextSpan(
+                        text:
+                            'An idea to support our community\'s creative economy while finding one-of-a-kind pieces. ',
+                      ),
+                      WidgetSpan(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const AboutUsPage(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'Get to know more About us',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              FaqItem(
+                title: 'Where are your products made?',
+                child: const Text(
+                  'We\'re selling 100% Egyptian products crafted with local threads by our amazing Egyptian tailors.',
+                  style: TextStyle(height: 1.5),
+                ),
+              ),
+
+              FaqItem(
+                title: 'How can I track my order?',
+                child: const Text(
+                  'You can track your order through Customer Area, link in the email sent by us, or by contacting our customer service email wecare@golocal.com',
+                  style: TextStyle(height: 1.5),
+                ),
+              ),
+
+              const SizedBox(height: 40),
+
+              // FOOTER (FROM FOOTER.DART)
+              const Footer(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//DRAWER
+
+class _MainMenuDrawer extends StatefulWidget {
+  const _MainMenuDrawer();
+
+  @override
+  State<_MainMenuDrawer> createState() => _MainMenuDrawerState();
+}
+
+class _MainMenuDrawerState extends State<_MainMenuDrawer> {
+  String? activeMenu;
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ===== HEADER =====
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  if (activeMenu == null)
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  if (activeMenu != null)
+                    InkWell(
+                      onTap: () => setState(() => activeMenu = null),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.arrow_back),
+                          const SizedBox(width: 8),
+                          Text(
+                            activeMenu!,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+
+            //MENU CONTENT
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                children: activeMenu == null ? _mainMenu() : _subMenu(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _mainMenu() {
+    return [
+      _MenuItem(
+        title: 'WOMEN',
+        onTap: () => setState(() => activeMenu = 'WOMEN'),
+      ),
+      _MenuItem(title: 'MEN', onTap: () => setState(() => activeMenu = 'MEN')),
+      const _MenuItem(title: 'SHOP BY BRAND'),
+    ];
+  }
+
+  List<Widget> _subMenu() {
+    // For both MEN and WOMEN, show only TOPS and BOTTOMS
+    return const [_SubMenuItem(title: 'TOPS'), _SubMenuItem(title: 'BOTTOMS')];
+  }
+}
+
+// UI HELPERS
+
+class _MenuItem extends StatelessWidget {
+  final String title;
+  final VoidCallback? onTap;
+
+  const _MenuItem({required this.title, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ),
+      trailing: const Icon(
+        Icons.arrow_forward_ios,
+        size: 16,
+        color: Colors.black,
+      ),
+      onTap: onTap,
+    );
+  }
+}
+
+class _SubMenuItem extends StatelessWidget {
+  final String title;
+  const _SubMenuItem({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 12),
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        title: Text(
+          title,
+          style: const TextStyle(fontSize: 16, color: Colors.black),
+        ),
+        onTap: () {
+          // TODO: hook up filtering / navigation for Tops/Bottoms if needed
+        },
+      ),
+    );
+  }
+}
+
+class _TopButton extends StatelessWidget {
+  final String text;
+  const _TopButton(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        height: 48,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: const Color(0xFFACBDAA),
+          border: Border.all(color: Color(0xFFACBDAA)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CollectionRow extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 200,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: 3,
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemBuilder: (_, __) => Container(
+          width: 160,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.grey.shade300,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  const _SectionHeader(this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const Icon(Icons.arrow_forward_ios, size: 16),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProductsHorizontal extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 260,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: 4,
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemBuilder: (_, __) => Container(
+          width: 180,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.grey.shade200,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _GenderTile extends StatelessWidget {
+  final String title;
+
+  const _GenderTile({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey.shade200, // same scheme as other cards
+        // When you have your images ready, replace the color above with
+        // an image like this:
+        // image: const DecorationImage(
+        //   image: AssetImage('assets/images/your_image.png'),
+        //   fit: BoxFit.cover,
+        // ),
+      ),
+      child: Center(
+        child: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FaqItem extends StatelessWidget {
+  final String text;
+  const _FaqItem(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.grey.shade200,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [Text(text), const Icon(Icons.keyboard_arrow_down)],
+        ),
+      ),
+    );
+  }
+}
+
+class FaqItem extends StatefulWidget {
+  final String title;
+  final Widget child;
+
+  const FaqItem({super.key, required this.title, required this.child});
+
+  @override
+  State<FaqItem> createState() => _FaqItemState();
+}
+
+class _FaqItemState extends State<FaqItem> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(
+              widget.title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            trailing: Icon(
+              _expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+            ),
+            onTap: () {
+              setState(() {
+                _expanded = !_expanded;
+              });
+            },
+          ),
+          if (_expanded)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: widget.child,
+            ),
+        ],
+      ),
+    );
+  }
+}
