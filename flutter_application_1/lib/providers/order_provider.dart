@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/order_model.dart';
 
 class OrdersProvider extends ChangeNotifier {
-  // 🔹 DUMMY DATA (replace with Supabase later)
+  // DUMMY DATA
   final List<OrderModel> _orders = [
     OrderModel(
       id: 'ORD-005',

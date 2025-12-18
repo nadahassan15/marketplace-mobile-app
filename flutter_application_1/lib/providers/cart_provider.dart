@@ -24,7 +24,7 @@ class CartProvider extends ChangeNotifier {
 
   List<CartItem> get items => _items;
 
-  // ================= CART ACTIONS =================
+  //CART ACTIONS
 
   void addToCart(CartItem item) {
     // TODO: Supabase insert
