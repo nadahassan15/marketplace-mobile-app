@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/customer/search_screen.dart';
+import 'package:flutter_application_1/screens/customer/cart_screen.dart';
 
 class AppLayout extends StatelessWidget {
   final Widget body;
@@ -43,7 +44,12 @@ class AppLayout extends StatelessWidget {
         showUnselectedLabels: false,
         onTap: (index) {
           if (index == 1) {
-            _openSearch(context); 
+            _openSearch(context);
+          } else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const CartScreen()),
+            );
           }
         },
         items: const [

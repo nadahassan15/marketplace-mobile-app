@@ -302,7 +302,6 @@ class _SubMenuItem extends StatelessWidget {
           style: const TextStyle(fontSize: 16, color: Colors.black),
         ),
         onTap: () {
-          // TODO: hook up filtering / navigation for Tops/Bottoms if needed
         },
       ),
     );
@@ -412,9 +411,9 @@ class _GenderTile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.grey.shade200, // same scheme as other cards
-        // When you have your images ready, replace the color above with
-        // an image like this:
+        color: Colors.grey.shade200, 
+
+        
         // image: const DecorationImage(
         //   image: AssetImage('assets/images/your_image.png'),
         //   fit: BoxFit.cover,
