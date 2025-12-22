@@ -9,11 +9,7 @@ void main() async {
     url: 'https://ptnxcsugztfcdyrjhbrj.supabase.co',
     anonKey: 'sb_publishable_hek7Qv_4MBnKC9cx1LRsZA_4ttCtIz9',
   );
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -25,10 +21,12 @@ class MyApp extends StatelessWidget {
       title: 'GoLocal',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 181, 224, 141)),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 181, 224, 141),
+        ),
       ),
       home: const BrandHomeScreen(
-        brandId: '5e6feb56-7a5d-4d34-ae60-9e2bbf60eef1',
+        brandId: '67be9637-1561-40ae-8ce4-3bc561ac4504',
       ),
     );
   }
@@ -75,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), 
+      ),
     );
   }
 }

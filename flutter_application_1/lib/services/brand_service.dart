@@ -9,8 +9,11 @@ class BrandService {
         .from('brandowner')
         .select()
         .eq('brandId', brandId)
-        .single();
+        .maybeSingle();
 
+    if (data == null) {
+      throw Exception('Brand not found with ID $brandId');
+    }
     return Brand.fromJson(data);
   }
 

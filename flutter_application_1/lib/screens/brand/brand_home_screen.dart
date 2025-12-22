@@ -17,7 +17,7 @@ class BrandHomeScreen extends ConsumerWidget {
       body: brand.when(
         data: (b) => Column(
           children: [
-            CircleAvatar(radius: 40, backgroundImage: NetworkImage(b.logoPath)),
+            CircleAvatar(radius: 40, backgroundImage: AssetImage('assets/images/TheStahps_logo.jpg')),
             Text(b.brandName, style: Theme.of(context).textTheme.headlineSmall),
             Text(b.description),
             ElevatedButton(
