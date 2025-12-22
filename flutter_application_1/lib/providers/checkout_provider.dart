@@ -51,7 +51,7 @@ class CheckoutProvider extends ChangeNotifier {
     debugPrint(addressController.text);
     debugPrint(governorate);
 
-    // 🔜 Replace this later with Supabase order insert
+    // Replace this later with Supabase order insert
   }
 
   @override

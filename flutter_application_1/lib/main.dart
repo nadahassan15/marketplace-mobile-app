@@ -1,25 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // PROVIDERS
 import 'providers/checkout_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
+import 'providers/favorite_provider.dart';
+import 'providers/product_provider.dart';
 
 // SCREENS
 import 'screens/customer/home_screen.dart';
 import 'screens/customer/checkout_screen.dart';
 import 'screens/customer/cart_screen.dart';
 import 'screens/customer/ordershistory_screen.dart';
-import 'providers/order_provider.dart';
+import 'screens/customer/products_screen.dart';
+import 'screens/customer/product_details_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: 'https://ptnxcsugztfcdyrjhbrj.supabase.co',
+    anonKey: 'sb_publishable_hek7Qv_4MBnKC9cx1LRsZA_4ttCtIz9',
+  );
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CheckoutProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => OrdersProvider()),
+        ChangeNotifierProvider(create: (_) => FavoritesProvider()),
+        ChangeNotifierProvider(create: (_) => CheckoutProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
+
+        // ChangeNotifierProvider(create: (_) => OrdersProvider()),
+        // ChangeNotifierProvider(
+        //   create: (_) => ProductProvider()..fetchProducts(),
+        // ),
+        // ChangeNotifierProvider(create: (_) => FavoritesProvider()),
       ],
       child: const MyApp(),
     ),
@@ -38,12 +59,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
 
-      //choose what to run
-      // home: const HomeScreen(),
+      // choose what to run
+      home: const HomeScreen(),
       // home: const CheckoutScreen(),
-      home: const CartScreen(),
-      // home: const OrdersScreen(),
+      // home: const CartScreen(),
+      //  home: const ProductsScreen(),
       // home: const OrdersHistoryScreen(),
+      // home:const ProductDetailsScreen();
+      // home: ProductsScreen(),
     );
   }
 }

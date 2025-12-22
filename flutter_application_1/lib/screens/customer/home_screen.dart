@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/app_layout.dart';
 import 'package:flutter_application_1/widgets/footer.dart';
 import 'package:flutter_application_1/screens/static/about_us_page.dart';
+import 'package:flutter_application_1/screens/customer/products_screen.dart';
+import 'package:provider/provider.dart';
+import '../../providers/product_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -95,17 +98,12 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 32),
 
               _SectionHeader('EVERYDAY FITS'),
-              _ProductsHorizontal(),
-
-              const SizedBox(height: 32),
-
-              _SectionHeader('RELAXED FITS'),
-              _ProductsHorizontal(),
+              _ProductsHorizontal(filter: 'everyday_fit'),
 
               const SizedBox(height: 32),
 
               _SectionHeader('SHOP HOODIES'),
-              _ProductsHorizontal(),
+              _ProductsHorizontal(filter: 'hoodie'),
 
               const SizedBox(height: 32),
 
@@ -205,25 +203,10 @@ class _MainMenuDrawerState extends State<_MainMenuDrawer> {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  if (activeMenu == null)
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  if (activeMenu != null)
-                    InkWell(
-                      onTap: () => setState(() => activeMenu = null),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.arrow_back),
-                          const SizedBox(width: 8),
-                          Text(
-                            activeMenu!,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
                 ],
               ),
             ),
@@ -232,7 +215,7 @@ class _MainMenuDrawerState extends State<_MainMenuDrawer> {
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                children: activeMenu == null ? _mainMenu() : _subMenu(),
+                children: _mainMenu(),
               ),
             ),
           ],
@@ -245,16 +228,53 @@ class _MainMenuDrawerState extends State<_MainMenuDrawer> {
     return [
       _MenuItem(
         title: 'WOMEN',
-        onTap: () => setState(() => activeMenu = 'WOMEN'),
+        onTap: () {
+          setState(() {
+            activeMenu = activeMenu == 'women' ? null : 'women';
+          });
+        },
       ),
-      _MenuItem(title: 'MEN', onTap: () => setState(() => activeMenu = 'MEN')),
+      if (activeMenu == 'women') ..._subMenu('women'),
+      _MenuItem(
+        title: 'MEN',
+        onTap: () {
+          setState(() {
+            activeMenu = activeMenu == 'men' ? null : 'men';
+          });
+        },
+      ),
+      if (activeMenu == 'men') ..._subMenu('men'),
       const _MenuItem(title: 'SHOP BY BRAND'),
     ];
   }
 
-  List<Widget> _subMenu() {
-    // For both MEN and WOMEN, show only TOPS and BOTTOMS
-    return const [_SubMenuItem(title: 'TOPS'), _SubMenuItem(title: 'BOTTOMS')];
+  List<Widget> _subMenu(String gender) {
+    return [
+      _SubMenuItem(
+        title: 'TOP',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+                  const ProductsScreen(filter: 'top', title: 'Tops'),
+            ),
+          );
+        },
+      ),
+      _SubMenuItem(
+        title: 'BOTTOMS',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+                  const ProductsScreen(filter: 'bottom', title: 'Bottoms'),
+            ),
+          );
+        },
+      ),
+    ];
   }
 }
 
@@ -289,21 +309,15 @@ class _MenuItem extends StatelessWidget {
 
 class _SubMenuItem extends StatelessWidget {
   final String title;
-  const _SubMenuItem({required this.title});
+  final VoidCallback onTap;
+
+  const _SubMenuItem({required this.title, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 12),
-      child: ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(
-          title,
-          style: const TextStyle(fontSize: 16, color: Colors.black),
-        ),
-        onTap: () {
-        },
-      ),
+      padding: const EdgeInsets.only(left: 24),
+      child: ListTile(title: Text(title), onTap: onTap),
     );
   }
 }
@@ -335,71 +349,94 @@ class _TopButton extends StatelessWidget {
   }
 }
 
-class _CollectionRow extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: 3,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (_, __) => Container(
-          width: 160,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.grey.shade300,
-          ),
-        ),
-      ),
-    );
-  }
-}
+// class _CollectionRow extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return SizedBox(
+//       height: 200,
+//       child: ListView.separated(
+//         scrollDirection: Axis.horizontal,
+//         padding: const EdgeInsets.symmetric(horizontal: 16),
+//         itemCount: 3,
+//         separatorBuilder: (_, __) => const SizedBox(width: 12),
+//         itemBuilder: (_, __) => Container(
+//           width: 160,
+//           decoration: BoxDecoration(
+//             borderRadius: BorderRadius.circular(12),
+//             color: Colors.grey.shade300,
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class _SectionHeader extends StatelessWidget {
   final String title;
   const _SectionHeader(this.title);
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const Icon(Icons.arrow_forward_ios, size: 16),
-        ],
-      ),
-    );
+  String get filter {
+    switch (title) {
+      case 'EVERYDAY FITS':
+        return 'everyday_fit';
+      case 'SHOP HOODIES':
+        return 'hoodie';
+      default:
+        return '';
+    }
   }
-}
 
-class _ProductsHorizontal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 260,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
+    return InkWell(
+      onTap: filter.isEmpty
+          ? null
+          : () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ProductsScreen(filter: filter, title: title),
+                ),
+              );
+            },
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: 4,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (_, __) => Container(
-          width: 180,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.grey.shade200,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const Icon(Icons.arrow_forward_ios, size: 16),
+          ],
         ),
       ),
     );
   }
 }
+
+// class _ProductsHorizontal extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return SizedBox(
+//       height: 260,
+//       child: ListView.separated(
+//         scrollDirection: Axis.horizontal,
+//         padding: const EdgeInsets.symmetric(horizontal: 16),
+//         itemCount: 4,
+//         separatorBuilder: (_, __) => const SizedBox(width: 12),
+//         itemBuilder: (_, __) => Container(
+//           width: 180,
+//           decoration: BoxDecoration(
+//             borderRadius: BorderRadius.circular(12),
+//             color: Colors.grey.shade200,
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class _GenderTile extends StatelessWidget {
   final String title;
@@ -408,25 +445,31 @@ class _GenderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.grey.shade200, 
-
-        
-        // image: const DecorationImage(
-        //   image: AssetImage('assets/images/your_image.png'),
-        //   fit: BoxFit.cover,
-        // ),
-      ),
-      child: Center(
-        child: Text(
-          title,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ProductsScreen(
+              filter: title.toLowerCase(),
+              title: title, // women / men
+            ),
+          ),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.grey.shade200,
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            ),
           ),
         ),
       ),
@@ -434,28 +477,28 @@ class _GenderTile extends StatelessWidget {
   }
 }
 
-class _FaqItem extends StatelessWidget {
-  final String text;
-  const _FaqItem(this.text);
+// class _FaqItem extends StatelessWidget {
+//   final String text;
+//   const _FaqItem(this.text);
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.grey.shade200,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [Text(text), const Icon(Icons.keyboard_arrow_down)],
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+//       child: Container(
+//         padding: const EdgeInsets.all(16),
+//         decoration: BoxDecoration(
+//           borderRadius: BorderRadius.circular(8),
+//           color: Colors.grey.shade200,
+//         ),
+//         child: Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [Text(text), const Icon(Icons.keyboard_arrow_down)],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class FaqItem extends StatefulWidget {
   final String title;
@@ -503,5 +546,71 @@ class _FaqItemState extends State<FaqItem> {
       ),
     );
   }
-  
+}
+
+class _ProductsHorizontal extends StatefulWidget {
+  final String filter;
+  const _ProductsHorizontal({required this.filter});
+
+  @override
+  State<_ProductsHorizontal> createState() => _ProductsHorizontalState();
+}
+
+class _ProductsHorizontalState extends State<_ProductsHorizontal> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProductProvider>().loadPreviewProducts(widget.filter);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final products =
+        context.watch<ProductProvider>().previewProducts[widget.filter] ?? [];
+
+    if (products.isEmpty) {
+      return const SizedBox(height: 260);
+    }
+
+    return SizedBox(
+      height: 260,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: products.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemBuilder: (context, index) {
+          final product = products[index];
+          return SizedBox(
+            width: 180,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      'assets/images/${product.imagePath}',
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  product.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text('EGP ${product.price}'),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 }

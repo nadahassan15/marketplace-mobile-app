@@ -1,0 +1,121 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../models/product_model.dart';
+import '../../providers/product_provider.dart';
+
+class ProductsScreen extends StatefulWidget {
+  final String filter; // women / men / everyday_fit / hoodie
+  final String title;
+
+  const ProductsScreen({super.key, required this.filter, required this.title});
+
+  @override
+  State<ProductsScreen> createState() => _ProductsScreenState();
+}
+
+class _ProductsScreenState extends State<ProductsScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProductProvider>().loadProducts(widget.filter);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<ProductProvider>();
+
+    return Scaffold(
+      appBar: AppBar(  title: Text(widget.title),),
+      body: provider.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : provider.products.isEmpty
+          ? const Center(
+              child: Text(
+                'No products found',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            )
+          : GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.7,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+              ),
+              itemCount: provider.products.length,
+              itemBuilder: (context, index) {
+                return ProductCard(product: provider.products[index]);
+              },
+            ),
+    );
+  }
+}
+
+class ProductCard extends StatelessWidget {
+  final Product product;
+
+  const ProductCard({super.key, required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // IMAGE
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                'assets/images/${product.imagePath}',
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          // NAME
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Text(
+              product.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+
+          // PRICE
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Text('EGP ${product.price.toInt()}'),
+          ),
+
+          // COLORS
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Text(
+              product.colors,
+              style: const TextStyle(color: Colors.grey, fontSize: 12),
+            ),
+          ),
+
+          const SizedBox(height: 6),
+        ],
+      ),
+    );
+  }
+ 
+
+}
