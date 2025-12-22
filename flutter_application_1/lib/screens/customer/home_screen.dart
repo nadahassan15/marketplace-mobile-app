@@ -25,13 +25,12 @@ class HomeScreen extends StatelessWidget {
                 height: 260,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  color: Colors.grey.shade300,
                 ),
-                child: const Center(
-                  child: Text(
-                    'IMAGE / COLLECTION',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                clipBehavior: Clip.antiAlias,
+                child: Image.asset(
+                  'assets/images/homaimage.png',
+                  fit: BoxFit.cover,
+                  width: double.infinity,
                 ),
               ),
 
@@ -457,24 +456,39 @@ class _GenderTile extends StatelessWidget {
           ),
         );
       },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.grey.shade200,
-        ),
-        child: Center(
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
+       child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+                Image.asset(
+              title == 'WOMEN'
+                  ? 'assets/images/womenimage.png'
+                  : 'assets/images/menimage.png',
+              fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
             ),
-          ),
+       Container(
+              color: Colors.black.withOpacity(0.3),
+            ),
+       Center(
+           child: Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+            ),
+        
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
+
 }
 
 // class _FaqItem extends StatelessWidget {
