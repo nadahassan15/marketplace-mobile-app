@@ -29,7 +29,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     final provider = context.watch<ProductProvider>();
 
     return Scaffold(
-      appBar: AppBar(  title: Text(widget.title),),
+      appBar: AppBar(title: Text(widget.title)),
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : provider.products.isEmpty
@@ -72,50 +72,93 @@ class ProductCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // IMAGE
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                'assets/images/${product.imagePath}',
-                fit: BoxFit.cover,
-                width: double.infinity,
+  Expanded(
+  child: ClipRRect(
+    borderRadius: BorderRadius.circular(12),
+    child: Stack(
+      children: [
+        // IMAGE
+        Positioned.fill(
+          child: Image.asset(
+            'assets/images/${product.imagePath}',
+            fit: BoxFit.cover,
+          ),
+        ),
+
+        // ADD TO CART (transparent)
+        Positioned(
+          bottom: 8,
+          right: 8,
+          child: InkWell(
+            onTap: () {
+              // TODO: add to cart
+            },
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color.fromARGB(255, 159, 152, 152).withAlpha(128),
+              ),
+              child: const Icon(
+                Icons.add,
+                size: 18,
+                color: Colors.white,
               ),
             ),
           ),
+        ),
+      ],
+    ),
+  ),
+),
 
-          const SizedBox(height: 8),
+const SizedBox(height: 8),
 
-          // NAME
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: Text(
-              product.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 6),
+  child: Row(
+    children: [
+      Expanded(
+        child: Text(
+          product.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
+      InkWell(
+        onTap: () {
+          // TODO: add to favorites
+        },
+        child: const Icon(
+          Icons.favorite_border,
+          size: 18,
+          color: Colors.grey,
+        ),
+      ),
+    ],
+  ),
+),
 
-          // PRICE
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: Text('EGP ${product.price.toInt()}'),
-          ),
+// PRICE
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 6),
+  child: Text('EGP ${product.price.toInt()}'),
+),
 
-          // COLORS
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: Text(
-              product.colors,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
-            ),
-          ),
+// COLORS
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 6),
+  child: Text(
+    product.colors,
+    style: const TextStyle(color: Colors.grey, fontSize: 12),
+  ),
+),
 
-          const SizedBox(height: 6),
+const SizedBox(height: 6),
+
         ],
       ),
     );
   }
- 
-
 }
