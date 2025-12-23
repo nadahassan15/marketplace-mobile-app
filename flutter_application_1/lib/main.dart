@@ -1,23 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'screens/auth/login_screen.dart';
-import 'screens/customer/home_screen.dart';
-import 'screens/admin/admin_dashboard_screen.dart';
-import 'providers/auth_provider.dart';
+
+
 import 'services/user_service.dart';
 import 'theme/app_theme.dart';
+
+
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+import 'package:provider/provider.dart';
+
+
+// PROVIDERS
+import 'providers/checkout_provider.dart';
+import 'providers/cart_provider.dart';
+import 'providers/order_provider.dart';
+import 'providers/favorite_provider.dart';
+import 'providers/product_provider.dart';
+import 'providers/auth_provider.dart';
+
+// SCREENS
+import 'screens/customer/home_screen.dart';
+import 'screens/customer/checkout_screen.dart';
+import 'screens/customer/cart_screen.dart';
+import 'screens/customer/ordershistory_screen.dart';
+import 'screens/customer/products_screen.dart';
+import 'screens/customer/product_details_screen.dart';
+import 'screens/brand/brand_home_screen.dart';
+import 'screens/auth/login_screen.dart';
+import 'screens/admin/admin_dashboard_screen.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
     url: 'https://ptnxcsugztfcdyrjhbrj.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0bnhjc3VnenRmY2R5cmpoYnJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4OTc5MDksImV4cCI6MjA4MTQ3MzkwOX0.smtWt94cPbkZFwQK3v37igoA9KANwZC2SqUXFgu7mfQ',
+
+//     anonKey:
+//         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0bnhjc3VnenRmY2R5cmpoYnJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4OTc5MDksImV4cCI6MjA4MTQ3MzkwOX0.smtWt94cPbkZFwQK3v37igoA9KANwZC2SqUXFgu7mfQ',
+//   );
+    anonKey: 'sb_publishable_hek7Qv_4MBnKC9cx1LRsZA_4ttCtIz9',
+  );
+  runApp(const ProviderScope(child: MyApp()));
+  //consistent theming across the app
+  MaterialApp(
+    
+    theme: ThemeData(
+
+      primaryColor: const Color(0xFFACBDAA),
+      scaffoldBackgroundColor: Colors.white,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFACBDAA),
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      ),
+    ),
+    home: const HomeScreen(),
   );
 
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CheckoutProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => OrdersProvider()),
+        ChangeNotifierProvider(create: (_) => FavoritesProvider()),
+        ChangeNotifierProvider(create: (_) => CheckoutProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
+
 }
 
 class MyApp extends ConsumerWidget {
@@ -28,8 +94,9 @@ class MyApp extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
 
     return MaterialApp(
+
       debugShowCheckedModeBanner: false,
-      title: 'Golokal',
+      title: 'Golocal',
       theme: AppTheme.lightTheme,
       home: authState.when(
         data: (data) {
@@ -60,7 +127,6 @@ class MyApp extends ConsumerWidget {
 // Widget that routes based on user role from profiles table
 class RouteBasedOnRole extends StatefulWidget {
   const RouteBasedOnRole({super.key});
-
   @override
   State<RouteBasedOnRole> createState() => _RouteBasedOnRoleState();
 }
@@ -69,6 +135,8 @@ class _RouteBasedOnRoleState extends State<RouteBasedOnRole> {
   final UserService _userService = UserService();
   Widget? _routeWidget;
   bool _isLoading = true;
+  final String title;
+
 
   @override
   void initState() {
@@ -100,6 +168,7 @@ class _RouteBasedOnRoleState extends State<RouteBasedOnRole> {
       // First check userMetadata (faster)
       String? role = user.userMetadata?['role']?.toString().toLowerCase();
 
+
       // If not in metadata, check profiles table
       if (role == null || role.isEmpty) {
         try {
@@ -115,8 +184,12 @@ class _RouteBasedOnRoleState extends State<RouteBasedOnRole> {
         // Check if role is admin (case-insensitive)
         if (role != null && role.toLowerCase() == 'admin') {
           _routeWidget = const AdminDashboardScreen();
-        } else {
+        } else if (role != null && role.toLowerCase() == 'customer'){
           _routeWidget = const HomePage();
+        } else {
+          _routeWidget = const BrandHomeScreen(
+             brandId: '67be9637-1561-40ae-8ce4-3bc561ac4504',
+          ),
         }
         _isLoading = false;
       });
@@ -128,15 +201,59 @@ class _RouteBasedOnRoleState extends State<RouteBasedOnRole> {
         _isLoading = false;
       });
     }
-  }
+
 
   @override
   Widget build(BuildContext context) {
+
     if (_isLoading) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
     return _routeWidget ?? const HomePage();
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text('You have pushed the button this many times:'),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
+      
+      debugShowCheckedModeBanner: false,
+      title: 'Golocal',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+
+      // choose what to run
+      home: const HomeScreen(),
+      // home: const CheckoutScreen(),
+      // home: const CartScreen(),
+      //  home: const ProductsScreen(),
+      // home: const OrdersHistoryScreen(),
+      // home:const ProductDetailsScreen();
+      // home: ProductsScreen(),
+      //  home: const BrandHomeScreen(
+      //brandId: '67be9637-1561-40ae-8ce4-3bc561ac4504',
+    //),
+    );
+
   }
 }
