@@ -61,10 +61,10 @@ class ProductService {
 
       print('Supabase response: $response');
 
-      if (response == null) {
-        print('No data returned from Supabase');
-        return [];
-      }
+      // if (response == null) {
+      //   print('No data returned from Supabase');
+      //   return [];
+      // }
 
       final products = (response as List)
           .map<Product>((e) => Product.fromJson(e))

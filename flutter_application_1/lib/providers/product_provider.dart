@@ -119,4 +119,5 @@ class ProductNotifier extends StateNotifier<List<Product>> {
       rethrow;
     }
   }
+  
 }
