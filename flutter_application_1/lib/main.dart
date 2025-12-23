@@ -35,12 +35,6 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => CheckoutProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => ProductProvider()),
-
-        // ChangeNotifierProvider(create: (_) => OrdersProvider()),
-        // ChangeNotifierProvider(
-        //   create: (_) => ProductProvider()..fetchProducts(),
-        // ),
-        // ChangeNotifierProvider(create: (_) => FavoritesProvider()),
       ],
       child: const MyApp(),
     ),

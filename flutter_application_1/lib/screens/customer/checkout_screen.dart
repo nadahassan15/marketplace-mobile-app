@@ -17,7 +17,6 @@ class CheckoutScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // ================= CONTACT =================
             const Text(
               'Contact',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -35,7 +34,6 @@ class CheckoutScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // ================= DELIVERY =================
             const Text(
               'Delivery',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -130,7 +128,6 @@ class CheckoutScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // ================= SHIPPING =================
             const Text(
               'Shipping method',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -145,7 +142,6 @@ class CheckoutScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // ================= PAYMENT =================
             const Text(
               'Payment',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -157,8 +153,6 @@ class CheckoutScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 32),
-
-            // ================= COMPLETE =================
             SizedBox(
               width: double.infinity,
               height: 52,
@@ -182,10 +176,6 @@ class CheckoutScreen extends StatelessWidget {
     );
   }
 }
-
-//////////////////////////////////////////////////
-// HELPER WIDGET
-//////////////////////////////////////////////////
 
 class _CardRow extends StatelessWidget {
   final String title;

@@ -25,7 +25,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           IconButton(
             icon: const Icon(Icons.favorite_border),
             onPressed: () {
-              // TODO: add to favorites
             },
           ),
         ],
@@ -46,7 +45,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  // ---------------- IMAGE + ADD ----------------
   Widget _productImage(Product product) {
     return Stack(
       children: [
@@ -56,27 +54,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           height: 350,
           fit: BoxFit.cover,
         ),
-        // Positioned(
-        //   bottom: 16,
-        //   right: 16,
-        //   child: Container(
-        //     decoration: BoxDecoration(
-        //       shape: BoxShape.circle,
-        //       color: Colors.black.withAlpha(130),
-        //     ),
-        //     child: IconButton(
-        //       icon: const Icon(Icons.add, color: Colors.white),
-        //       onPressed: () {
-        //         // TODO: add to cart
-        //       },
-        //     ),
-        //   ),
-        // ),
+      
       ],
     );
   }
-
-  // ---------------- NAME + PRICE ----------------
   Widget _productInfo(Product product) {
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -97,7 +78,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  // ---------------- SIZES ----------------
   Widget _sizesSection(Product product) {
 
   if (product.sizes.isEmpty) {
@@ -136,13 +116,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   );
 }
 
-  // ---------------- BUTTONS ----------------
   Widget _buttonsSection() {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          // ADD TO CART
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFACBDAA),
@@ -153,14 +131,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
             ),
             onPressed: () {
-              // TODO: add to cart
             },
             child: const Text('Add to Cart'),
           ),
 
           const SizedBox(height: 12),
-
-          // BUY IT NOW
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
@@ -171,7 +146,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
             ),
             onPressed: () {
-              // TODO: buy now
             },
             child: const Text('Buy it Now'),
           ),
@@ -179,8 +153,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       ),
     );
   }
-
-  // ---------------- DESCRIPTION ----------------
   Widget _descriptionSection(Product product) {
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -200,8 +172,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       ),
     );
   }
-
-  // ---------------- REVIEWS ----------------
   Widget _reviewsSection() {
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -228,7 +198,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 icon: const Icon(Icons.camera_alt),
                 label: const Text('Upload Photo'),
                 onPressed: () {
-                  // TODO: pick image
                 },
                 style: TextButton.styleFrom(
                   foregroundColor: const Color.fromARGB(255, 0, 0, 0),

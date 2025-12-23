@@ -91,7 +91,6 @@ class ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // IMAGE + ADD
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
@@ -108,7 +107,6 @@ class ProductCard extends StatelessWidget {
                       right: 8,
                       child: InkWell(
                         onTap: () {
-                          // TODO: add to cart
                         },
                         child: Container(
                           padding: const EdgeInsets.all(6),
@@ -131,8 +129,6 @@ class ProductCard extends StatelessWidget {
             ),
 
             const SizedBox(height: 8),
-
-            // NAME + FAVORITE
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: Row(
@@ -148,7 +144,6 @@ class ProductCard extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      // TODO: add to favorites
                     },
                     child: const Icon(
                       Icons.favorite_border,
@@ -159,14 +154,10 @@ class ProductCard extends StatelessWidget {
                 ],
               ),
             ),
-
-            // PRICE
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: Text('EGP ${product.price.toInt()}'),
             ),
-
-            // COLORS
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: Text(

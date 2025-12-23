@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 class AppSearchDelegate extends SearchDelegate<String?> {
   @override
   String get searchFieldLabel => 'Search products or brands';
-
-  //RIGHT SIDE
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
@@ -17,8 +15,6 @@ class AppSearchDelegate extends SearchDelegate<String?> {
         ),
     ];
   }
-
-  //LEFT SIDE
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
@@ -28,8 +24,6 @@ class AppSearchDelegate extends SearchDelegate<String?> {
       },
     );
   }
-
-  //WHEN USER PRESSES SEARCH
   @override
   Widget buildResults(BuildContext context) {
     return Center(
@@ -39,8 +33,6 @@ class AppSearchDelegate extends SearchDelegate<String?> {
       ),
     );
   }
-
-  //WHILE TYPING
   @override
   Widget buildSuggestions(BuildContext context) {
     return const Center();

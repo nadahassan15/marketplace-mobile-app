@@ -19,7 +19,6 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // FIRST IMAGE / COLLECTION
               Container(
                 margin: const EdgeInsets.all(16),
                 height: 260,
@@ -34,7 +33,6 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
 
-              //BUTTONS
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
@@ -71,7 +69,6 @@ class HomeScreen extends StatelessWidget {
               // const SizedBox(height: 16),
               // _CollectionRow(),
 
-              // ================= NEW WOMEN / MEN SECTIONS =================
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
@@ -106,7 +103,6 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 32),
 
-              // ================= FAQ =================
               const Center(
                 child: Text(
                   'FAQ',
@@ -168,7 +164,6 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 40),
 
-              // FOOTER (FROM FOOTER.DART)
               const Footer(),
             ],
           ),
@@ -177,8 +172,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
-//DRAWER
 
 class _MainMenuDrawer extends StatefulWidget {
   const _MainMenuDrawer();
@@ -197,7 +190,6 @@ class _MainMenuDrawerState extends State<_MainMenuDrawer> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ===== HEADER =====
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
@@ -209,8 +201,6 @@ class _MainMenuDrawerState extends State<_MainMenuDrawer> {
                 ],
               ),
             ),
-
-            //MENU CONTENT
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

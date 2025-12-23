@@ -24,7 +24,7 @@ class ProductService {
           .map((e) => e.trim())
           .toList();
 
-      // special case: men / women include unisex
+      // men / women include unisex
       if (filters.contains('men') && !categories.contains('men')) {
         if (!categories.contains('unisex')) return false;
       }
@@ -33,7 +33,7 @@ class ProductService {
         if (!categories.contains('unisex')) return false;
       }
 
-      // check remaining filters (top, bottom, hoodie, etc.)
+      // check remaining filters 
       for (final f in filters) {
         if (f == 'men' || f == 'women') continue;
         if (!categories.contains(f)) return false;
