@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/customer/checkout_screen.dart';
 import '../../models/product_model.dart';
 import '../customer/cart_screen.dart';
+final _reviewFormKey = GlobalKey<FormState>();
 
 class ProductDetailsScreen extends StatefulWidget {
   final Product product;
@@ -189,8 +190,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
   Widget _reviewsSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
+  return Padding(
+    padding: const EdgeInsets.all(16),
+    child: Form(
+      key: _reviewFormKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -199,34 +202,50 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
-          TextField(
+
+          TextFormField(
             controller: reviewController,
             maxLines: 3,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please write a review';
+              }
+              if (value.length < 5) {
+                return 'Review must be at least 5 characters';
+              }
+              return null;
+            },
             decoration: const InputDecoration(
               hintText: 'Write your review...',
               border: OutlineInputBorder(),
             ),
           ),
+
           const SizedBox(height: 8),
+
           Row(
             children: [
               TextButton.icon(
                 icon: const Icon(Icons.camera_alt),
                 label: const Text('Upload Photo'),
-                onPressed: () {
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color.fromARGB(255, 0, 0, 0),
-                ),
+                onPressed: () {},
               ),
               const Spacer(),
+
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFACBDAA),
                   foregroundColor: Colors.white,
                 ),
                 onPressed: () {
-                  reviewController.clear();
+                  if (_reviewFormKey.currentState!.validate()) {
+                    // ✅ valid review
+                    reviewController.clear();
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Review submitted')),
+                    );
+                  }
                 },
                 child: const Text('Submit'),
               ),
@@ -234,6 +253,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           ),
         ],
       ),
-    );
+    ),
+  );
   }
 }
