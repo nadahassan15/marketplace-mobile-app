@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/models/product_model.dart';
+// import 'package:flutter_application_1/models/product_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/product_provider.dart';
 import '../../widgets/dialogs/product_form_dialog.dart';
+import '../../models/product_model.dart';
 
 class ProductManagementScreen extends ConsumerStatefulWidget {
   final String brandId;
