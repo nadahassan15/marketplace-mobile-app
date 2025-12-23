@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+
+import 'services/user_service.dart';
+import 'theme/app_theme.dart';
+
+
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+
 
 // PROVIDERS
 import 'providers/checkout_provider.dart';
@@ -13,6 +20,7 @@ import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
 import 'providers/favorite_provider.dart';
 import 'providers/product_provider.dart';
+import 'providers/auth_provider.dart';
 
 // SCREENS
 import 'screens/customer/home_screen.dart';
@@ -22,12 +30,19 @@ import 'screens/customer/ordershistory_screen.dart';
 import 'screens/customer/products_screen.dart';
 import 'screens/customer/product_details_screen.dart';
 import 'screens/brand/brand_home_screen.dart';
+import 'screens/auth/login_screen.dart';
+import 'screens/admin/admin_dashboard_screen.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
     url: 'https://ptnxcsugztfcdyrjhbrj.supabase.co',
+
+//     anonKey:
+//         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0bnhjc3VnenRmY2R5cmpoYnJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4OTc5MDksImV4cCI6MjA4MTQ3MzkwOX0.smtWt94cPbkZFwQK3v37igoA9KANwZC2SqUXFgu7mfQ',
+//   );
     anonKey: 'sb_publishable_hek7Qv_4MBnKC9cx1LRsZA_4ttCtIz9',
   );
   runApp(const ProviderScope(child: MyApp()));
@@ -68,46 +83,136 @@ Future<void> main() async {
       child: const MyApp(),
     ),
   );
+
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authStateProvider);
+
     return MaterialApp(
-      title: 'GoLocal',
+
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 181, 224, 141),
-        ),
+      title: 'Golocal',
+      theme: AppTheme.lightTheme,
+      home: authState.when(
+        data: (data) {
+          // If a session exists, check role and route accordingly
+          if (data.session != null) {
+            return RouteBasedOnRole();
+          }
+          // Otherwise, go to Login
+          return const LoginScreen();
+        },
+        loading: () {
+          // QUICK CHECK: Prevent the "need to refresh" issue
+          final currentSession = Supabase.instance.client.auth.currentSession;
+          if (currentSession != null) {
+            return RouteBasedOnRole();
+          }
+
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        },
+        error: (e, __) => const LoginScreen(),
       ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
+// Widget that routes based on user role from profiles table
+class RouteBasedOnRole extends StatefulWidget {
+  const RouteBasedOnRole({super.key});
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<RouteBasedOnRole> createState() => _RouteBasedOnRoleState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _RouteBasedOnRoleState extends State<RouteBasedOnRole> {
+  final UserService _userService = UserService();
+  Widget? _routeWidget;
+  bool _isLoading = true;
+  final String title;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+
+  @override
+  void initState() {
+    super.initState();
+    _determineRoute();
   }
+
+  Future<void> _determineRoute() async {
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user == null) {
+        setState(() {
+          _routeWidget = const LoginScreen();
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // Check if it's the admin email (hardcoded admin account)
+      const adminEmail = 'admin@golokal.com';
+      if (user.email?.toLowerCase() == adminEmail.toLowerCase()) {
+        setState(() {
+          _routeWidget = const AdminDashboardScreen();
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // First check userMetadata (faster)
+      String? role = user.userMetadata?['role']?.toString().toLowerCase();
+
+
+      // If not in metadata, check profiles table
+      if (role == null || role.isEmpty) {
+        try {
+          role = await _userService.getUserRoleFromProfile(user.id);
+          role = role?.toLowerCase();
+        } catch (e) {
+          // If fetching from profiles fails, continue with null role
+          print('Error fetching role from profiles: $e');
+        }
+      }
+
+      setState(() {
+        // Check if role is admin (case-insensitive)
+        if (role != null && role.toLowerCase() == 'admin') {
+          _routeWidget = const AdminDashboardScreen();
+        } else if (role != null && role.toLowerCase() == 'customer'){
+          _routeWidget = const HomePage();
+        } else {
+          _routeWidget = const BrandHomeScreen(
+             brandId: '67be9637-1561-40ae-8ce4-3bc561ac4504',
+          ),
+        }
+        _isLoading = false;
+      });
+    } catch (e) {
+      // On error, default to home page
+      print('Error determining route: $e');
+      setState(() {
+        _routeWidget = const HomePage();
+        _isLoading = false;
+      });
+    }
+
 
   @override
   Widget build(BuildContext context) {
+
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+    return _routeWidget ?? const HomePage();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -149,5 +254,6 @@ class _MyHomePageState extends State<MyHomePage> {
       //brandId: '67be9637-1561-40ae-8ce4-3bc561ac4504',
     //),
     );
+
   }
 }

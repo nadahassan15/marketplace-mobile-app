@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/customer/product_details_screen.dart';
 import 'package:flutter_application_1/widgets/app_layout.dart';
@@ -630,3 +631,4 @@ class _ProductsHorizontalState extends State<_ProductsHorizontal> {
     );
   }
 }
+
