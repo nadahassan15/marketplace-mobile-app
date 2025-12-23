@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../models/product_model.dart';
 import '../../providers/product_provider.dart';
 import 'product_details_screen.dart';
+import '../../utils/responsive.dart';
 
 class ProductsScreen extends StatefulWidget {
   final String filter;
@@ -30,6 +31,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
+        final double screenPadding = Responsive.padding(context);
+    final double titleFontSize =Responsive.fontSize(context, mobile: 24, tablet: 26, desktop: 28);
+    final double bodyFontSize = Responsive.fontSize(context, mobile: 12, tablet: 14, desktop: 16);
+
     final provider = context.watch<ProductProvider>();
 
     return Scaffold(

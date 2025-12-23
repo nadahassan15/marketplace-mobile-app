@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/order_provider.dart';
+import '../../utils/responsive.dart';
 
 class OrdersHistoryScreen extends StatelessWidget {
   const OrdersHistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+        final double screenPadding = Responsive.padding(context);
+    final double titleFontSize =Responsive.fontSize(context, mobile: 24, tablet: 26, desktop: 28);
+    final double bodyFontSize = Responsive.fontSize(context, mobile: 12, tablet: 14, desktop: 16);
+
     final ordersProvider = context.watch<OrdersProvider>();
     final orders = ordersProvider.orders;
 

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/customer/checkout_screen.dart';
 import '../../models/product_model.dart';
 import '../customer/cart_screen.dart';
+import '../../utils/responsive.dart';
+
 final _reviewFormKey = GlobalKey<FormState>();
 
 class ProductDetailsScreen extends StatefulWidget {
@@ -19,6 +21,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+        final double screenPadding = Responsive.padding(context);
+    final double titleFontSize =Responsive.fontSize(context, mobile: 24, tablet: 26, desktop: 28);
+    final double bodyFontSize = Responsive.fontSize(context, mobile: 12, tablet: 14, desktop: 16);
+
     final product = widget.product;
 
     return Scaffold(
