@@ -43,7 +43,7 @@ class _ProductFormDialogState extends ConsumerState<ProductFormDialog> {
     _colorsController = TextEditingController(
       text: widget.product?.colors ?? '',
     );
-    _sizeController = TextEditingController(text: widget.product?.size ?? '');
+    _sizeController = TextEditingController(text: widget.product?.sizes.join(',') ?? '');
     _descriptionController = TextEditingController(
       text: widget.product?.description ?? '',
     );
@@ -186,9 +186,13 @@ class _ProductFormDialogState extends ConsumerState<ProductFormDialog> {
         colors: _colorsController.text.trim().isEmpty
             ? null
             : _colorsController.text.trim(),
-        size: _sizeController.text.trim().isEmpty
-            ? null
-            : _sizeController.text.trim(),
+sizes: _sizeController.text.trim().isEmpty
+            ? <String>[]
+            : _sizeController.text
+                  .trim()
+                  .split(',')
+                  .map((s) => s.trim())
+                  .toList(),
         description: _descriptionController.text.trim().isEmpty
             ? null
             : _descriptionController.text.trim(),

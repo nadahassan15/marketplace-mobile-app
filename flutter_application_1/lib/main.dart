@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -12,7 +9,9 @@ import 'providers/checkout_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
 import 'providers/favorite_provider.dart';
-import 'providers/product_provider.dart';
+import 'providers/product_list_provider.dart';
+import 'providers/product_view_provider.dart';
+
 
 // SCREENS
 import 'screens/customer/home_screen.dart';
@@ -23,6 +22,11 @@ import 'screens/customer/products_screen.dart';
 import 'screens/customer/product_details_screen.dart';
 import 'screens/brand/brand_home_screen.dart';
 
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -30,7 +34,7 @@ Future<void> main() async {
     url: 'https://ptnxcsugztfcdyrjhbrj.supabase.co',
     anonKey: 'sb_publishable_hek7Qv_4MBnKC9cx1LRsZA_4ttCtIz9',
   );
-  runApp(const ProviderScope(child: MyApp()));
+  runApp( ProviderScope(child: MyApp()));
   //consistent theming across the app
   MaterialApp(
     
@@ -97,14 +101,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
-      
+    );
+  }
       debugShowCheckedModeBanner: false,
       title: 'Golocal',
       theme: ThemeData(
@@ -150,4 +148,5 @@ class _MyHomePageState extends State<MyHomePage> {
     //),
     );
   }
+};
 }

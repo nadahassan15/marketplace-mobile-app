@@ -1,8 +1,12 @@
-merging_branch
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:supabase/supabase.dart';
 import '../models/product_model.dart';
+
+import '../providers/product_view_provider.dart';
+import '../providers/product_list_provider.dart';
 
 class ProductService {
 
@@ -116,12 +120,10 @@ class ProductService {
       return true;
     }).toList();
   }
-}
-
   Future<Product> addProduct(Product product) async {
     try {
       print('Adding product to Supabase: ${product.toJson()}');
-      
+
       final response = await supabase
           .from('products')
           .insert(product.toJson())
@@ -129,7 +131,7 @@ class ProductService {
           .single();
 
       print('Product added successfully: $response');
-      
+
       return Product.fromJson(response);
     } catch (e) {
       print('Error adding product to Supabase: $e');
@@ -141,7 +143,7 @@ class ProductService {
     try {
       print('Updating product in Supabase: ${product.productId}');
       print('Update data: ${product.toJson()}');
-      
+
       final response = await supabase
           .from('products')
           .update(product.toJson())
@@ -158,7 +160,7 @@ class ProductService {
   Future<void> deleteProduct(String productId, String? imagePath) async {
     try {
       print('Deleting product from Supabase: $productId');
-      
+
       // Delete local image if exists
       if (imagePath != null && imagePath.isNotEmpty) {
         await deleteLocalImage(imagePath);
