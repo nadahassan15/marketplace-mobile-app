@@ -158,7 +158,7 @@ class CheckoutScreen extends StatelessWidget {
               height: 52,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor:Color(0xFFACBDAA),
                 ),
                 onPressed: provider.submitOrder,
                 child: const Text(

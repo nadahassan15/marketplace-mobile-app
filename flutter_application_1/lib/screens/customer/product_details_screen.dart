@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/customer/checkout_screen.dart';
 import '../../models/product_model.dart';
+import '../customer/cart_screen.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final Product product;
@@ -131,7 +133,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
             ),
             onPressed: () {
-            },
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const CartScreen(),
+    ),
+  );
+},
+
             child: const Text('Add to Cart'),
           ),
 
@@ -145,8 +154,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            onPressed: () {
-            },
+           onPressed: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const CheckoutScreen(),
+    ),
+  );
+},
+
             child: const Text('Buy it Now'),
           ),
         ],
