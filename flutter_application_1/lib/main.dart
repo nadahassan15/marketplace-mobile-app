@@ -26,9 +26,7 @@ Future<void> main() async {
   );
   //consistent theming across the app
   MaterialApp(
-    
     theme: ThemeData(
-
       primaryColor: const Color(0xFFACBDAA),
       scaffoldBackgroundColor: Colors.white,
       appBarTheme: const AppBarTheme(
@@ -69,7 +67,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-  
       debugShowCheckedModeBanner: false,
       title: 'Golocal',
       theme: ThemeData(

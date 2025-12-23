@@ -14,8 +14,18 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double screenPadding = Responsive.padding(context);
-    final double titleFontSize =Responsive.fontSize(context, mobile: 24, tablet: 26, desktop: 28);
-    final double bodyFontSize = Responsive.fontSize(context, mobile: 12, tablet: 14, desktop: 16);
+    final double titleFontSize = Responsive.fontSize(
+      context,
+      mobile: 24,
+      tablet: 26,
+      desktop: 28,
+    );
+    final double bodyFontSize = Responsive.fontSize(
+      context,
+      mobile: 12,
+      tablet: 14,
+      desktop: 16,
+    );
 
     return AppLayout(
       drawer: const _MainMenuDrawer(),
