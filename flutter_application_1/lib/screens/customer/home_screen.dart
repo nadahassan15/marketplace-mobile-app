@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/customer/product_details_screen.dart';
 import 'package:flutter_application_1/widgets/app_layout.dart';
 import 'package:flutter_application_1/widgets/footer.dart';
 import 'package:flutter_application_1/screens/static/about_us_page.dart';
@@ -68,7 +69,6 @@ class HomeScreen extends StatelessWidget {
               // ),
               // const SizedBox(height: 16),
               // _CollectionRow(),
-
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
@@ -446,31 +446,28 @@ class _GenderTile extends StatelessWidget {
           ),
         );
       },
-       child: ClipRRect(
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Stack(
           fit: StackFit.expand,
           children: [
-                Image.asset(
+            Image.asset(
               title == 'WOMEN'
                   ? 'assets/images/womenimage.png'
                   : 'assets/images/menimage.png',
               fit: BoxFit.cover,
-                alignment: Alignment.topCenter,
+              alignment: Alignment.topCenter,
             ),
-       Container(
-              color: Colors.black.withOpacity(0.3),
-            ),
-       Center(
-           child: Text(
+            Container(color: Colors.black.withOpacity(0.3)),
+            Center(
+              child: Text(
                 title,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,
-            ),
-        
+                ),
               ),
             ),
           ],
@@ -478,7 +475,6 @@ class _GenderTile extends StatelessWidget {
       ),
     );
   }
-
 }
 
 // class _FaqItem extends StatelessWidget {
@@ -587,30 +583,41 @@ class _ProductsHorizontalState extends State<_ProductsHorizontal> {
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final product = products[index];
-          return SizedBox(
-            width: 180,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      'assets/images/${product.imagePath}',
-                      fit: BoxFit.cover,
-                      width: double.infinity,
+
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ProductDetailsScreen(product: product),
+                ),
+              );
+            },
+            child: SizedBox(
+              width: 180,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        'assets/images/${product.imagePath}',
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  product.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text('EGP ${product.price}'),
-              ],
+                  const SizedBox(height: 6),
+                  Text(
+                    product.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text('EGP ${product.price}'),
+                ],
+              ),
             ),
           );
         },
