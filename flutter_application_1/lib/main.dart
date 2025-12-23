@@ -70,6 +70,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       
+
+  darkTheme: ThemeData.dark(),
+
+  themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       title: 'Golocal',
       theme: ThemeData(
