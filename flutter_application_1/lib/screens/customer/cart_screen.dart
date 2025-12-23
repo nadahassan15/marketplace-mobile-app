@@ -4,13 +4,16 @@ import '../../providers/cart_provider.dart';
 import '../../widgets/cart/cart_item_card.dart';
 import 'home_screen.dart';
 import 'checkout_screen.dart';
-
+import '../../utils/responsive.dart';
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final cart = context.watch<CartProvider>();
+    final double screenPadding = Responsive.padding(context);
+    final double titleFontSize =Responsive.fontSize(context, mobile: 24, tablet: 26, desktop: 28);
+    final double bodyFontSize = Responsive.fontSize(context, mobile: 12, tablet: 14, desktop: 16);
 
     return Scaffold(
       appBar: AppBar(title: const Text('My Cart')),

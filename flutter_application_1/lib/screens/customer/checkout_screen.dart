@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/checkout_provider.dart';
+import '../../utils/responsive.dart';
 
 class CheckoutScreen extends StatelessWidget {
   const CheckoutScreen({super.key});
@@ -8,6 +9,9 @@ class CheckoutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<CheckoutProvider>();
+    final double screenPadding = Responsive.padding(context);
+    final double titleFontSize =Responsive.fontSize(context, mobile: 24, tablet: 26, desktop: 28);
+    final double bodyFontSize = Responsive.fontSize(context, mobile: 12, tablet: 14, desktop: 16);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Checkout')),

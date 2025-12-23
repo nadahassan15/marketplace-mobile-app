@@ -239,7 +239,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 ),
                 onPressed: () {
                   if (_reviewFormKey.currentState!.validate()) {
-                    // ✅ valid review
                     reviewController.clear();
 
                     ScaffoldMessenger.of(context).showSnackBar(

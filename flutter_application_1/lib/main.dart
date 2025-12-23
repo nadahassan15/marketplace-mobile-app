@@ -24,6 +24,28 @@ Future<void> main() async {
     url: 'https://ptnxcsugztfcdyrjhbrj.supabase.co',
     anonKey: 'sb_publishable_hek7Qv_4MBnKC9cx1LRsZA_4ttCtIz9',
   );
+  //consistent theming across the app
+  MaterialApp(
+    
+    theme: ThemeData(
+
+      primaryColor: const Color(0xFFACBDAA),
+      scaffoldBackgroundColor: Colors.white,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFACBDAA),
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      ),
+    ),
+    home: const HomeScreen(),
+  );
 
   runApp(
     MultiProvider(
@@ -47,6 +69,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      
       debugShowCheckedModeBanner: false,
       title: 'Golocal',
       theme: ThemeData(
