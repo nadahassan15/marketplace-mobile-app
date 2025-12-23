@@ -4,7 +4,7 @@ class Product {
   final String name;
   final String category;
   final String? colors;
-  final String? size;
+  final List<String> sizes;
   final String? description;
   final double price;
   final int stockQty;
@@ -18,7 +18,7 @@ class Product {
     required this.name,
     required this.category,
     this.colors,
-    this.size,
+    required this.size,
     this.description,
     required this.price,
     required this.stockQty,
@@ -26,26 +26,41 @@ class Product {
     required this.status,
     required this.createdAt,
   });
+  
+   ///Backward compatibility (old code uses product.id)
+  String get id => productId;
+  String get imageUrl => imagePath ?? '';
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      productId: json['productId'] as String,
+      productId: (json['productId'] ?? json['productid'] ?? '').toString(),
       brandId: json['brandId'] as String,
       name: json['name'] as String? ?? '',
       category: json['category'] as String? ?? '',
       colors: json['colors'] as String?,
-      size: json['size'] as String?,
+      sizes: _parseSizes(json['size']),
       description: json['description'] as String?,
-      price: ((json['price'] ?? 0) as num).toDouble(),
+      price: ((json['price'] ?? 0) as num).toDouble(),      
       stockQty: (json['stock_qty'] ?? 0) as int,
       imagePath: json['image_path'] as String?,
       status: json['product_status'] as bool? ?? true,
-      createdAt: DateTime.parse(json['created_at'] as String),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
     );
   }
-
-  String get imageUrl => imagePath ?? '';
-  String get id => productId;
+  
+  static List<String> _parseSizes(dynamic size) {
+    if (size == null) return [];
+    if (size is List) return List<String>.from(size);
+    return size
+        .toString()
+        .replaceAll('{', '')
+        .replaceAll('}', '')
+        .split(',')
+        .map((e) => e.trim())
+        .toList();
+  }
 
   Map<String, dynamic> toJson() {
     // For INSERT (add new product) - don't include productId

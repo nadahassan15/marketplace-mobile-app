@@ -1,9 +1,11 @@
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
+merging_branch
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 import '../models/product_model.dart';
 
 class ProductService {
+
   final supabase = Supabase.instance.client;
 
   // Save image to local storage and return the filename
@@ -75,6 +77,46 @@ class ProductService {
       return [];
     }
   }
+  
+  Future<List<Product>> fetchProducts({required String filter}) async {
+    final response = await supabase.from('products').select();
+
+    final products = (response as List)
+        .map((e) => Product.fromJson(e))
+        .toList();
+
+    final filters = filter
+        .toLowerCase()
+        .split(',')
+        .map((e) => e.trim())
+        .toList();
+
+    return products.where((product) {
+      final categories = product.category
+          .toLowerCase()
+          .split(',')
+          .map((e) => e.trim())
+          .toList();
+
+      // men / women include unisex
+      if (filters.contains('men') && !categories.contains('men')) {
+        if (!categories.contains('unisex')) return false;
+      }
+
+      if (filters.contains('women') && !categories.contains('women')) {
+        if (!categories.contains('unisex')) return false;
+      }
+
+      // check remaining filters 
+      for (final f in filters) {
+        if (f == 'men' || f == 'women') continue;
+        if (!categories.contains(f)) return false;
+      }
+
+      return true;
+    }).toList();
+  }
+}
 
   Future<Product> addProduct(Product product) async {
     try {
@@ -136,3 +178,4 @@ class ProductService {
     }
   }
 }
+

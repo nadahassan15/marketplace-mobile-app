@@ -1,3 +1,4 @@
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 import '../models/product_model.dart';
@@ -10,7 +11,7 @@ final productProvider = StateNotifierProvider<ProductNotifier, List<Product>>((
 });
 
 class ProductNotifier extends StateNotifier<List<Product>> {
-  final service = ProductService();
+  final ProductService service = ProductService();
 
   ProductNotifier() : super([]);
 
@@ -23,6 +24,7 @@ class ProductNotifier extends StateNotifier<List<Product>> {
     } catch (e) {
       print('Error in loadProducts: $e');
       state = [];
+      rethrow;
     }
   }
 
@@ -86,7 +88,7 @@ class ProductNotifier extends StateNotifier<List<Product>> {
 
       print('Product updated in Supabase, updating state...');
       state = state
-          .map((p) => p.productId == product.productId ? updatedProduct : p)
+          .map((p) => p.productId == updatedProduct.productId ? updatedProduct : p)
           .toList();
 
       print('State updated successfully');
