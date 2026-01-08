@@ -3,12 +3,14 @@ import '../../utils/responsive.dart';
 
 class AppSearchDelegate extends SearchDelegate<String?> {
   @override
-  String get searchFieldLabel => 'Search products or brands';
+  String get searchFieldLabel => 'Search ';
   @override
   List<Widget>? buildActions(BuildContext context) {
-        final double screenPadding = Responsive.padding(context);
-    final double titleFontSize =Responsive.fontSize(context, mobile: 24, tablet: 26, desktop: 28);
-    final double bodyFontSize = Responsive.fontSize(context, mobile: 12, tablet: 14, desktop: 16);
+    final double screenPadding = Responsive.padding(context);
+    final double titleFontSize =
+        Responsive.fontSize(context, mobile: 24, tablet: 26, desktop: 28);
+    final double bodyFontSize =
+        Responsive.fontSize(context, mobile: 12, tablet: 14, desktop: 16);
 
     return [
       if (query.isNotEmpty)
@@ -20,6 +22,7 @@ class AppSearchDelegate extends SearchDelegate<String?> {
         ),
     ];
   }
+
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
@@ -29,6 +32,7 @@ class AppSearchDelegate extends SearchDelegate<String?> {
       },
     );
   }
+
   @override
   Widget buildResults(BuildContext context) {
     return Center(
@@ -38,6 +42,7 @@ class AppSearchDelegate extends SearchDelegate<String?> {
       ),
     );
   }
+
   @override
   Widget buildSuggestions(BuildContext context) {
     return const Center();

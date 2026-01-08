@@ -28,12 +28,13 @@ class CartScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final item = cart.items[index];
 
-                  return CartItemCard(
-                    item: item,
-                    onAdd: () => cart.increaseQty(item.id),
-                    onRemove: () => cart.decreaseQty(item.id),
-                    onDelete: () => cart.removeFromCart(item.id),
-                  );
+                return CartItemCard(
+  item: item,
+  onAdd: () => cart.increaseQty(item),
+  onRemove: () => cart.decreaseQty(item),
+  onDelete: () => cart.removeFromCart(item),
+);
+
                 },
               ),
             ),

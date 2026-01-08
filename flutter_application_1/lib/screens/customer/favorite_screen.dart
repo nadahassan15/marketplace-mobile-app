@@ -364,7 +364,7 @@ class _FavoriteProductCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: Text(
-                product.colors,
+                 product.colors.join(', '),
                 style: const TextStyle(color: Colors.grey, fontSize: 12),
               ),
             ),

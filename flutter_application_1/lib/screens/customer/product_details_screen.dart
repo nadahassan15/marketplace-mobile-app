@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_application_1/screens/customer/checkout_screen.dart';
+
 import '../../models/product_model.dart';
-import '../customer/cart_screen.dart';
+import '../../providers/cart_provider.dart';
 import '../../providers/favorite_provider.dart';
 import '../../services/supabase_service.dart';
-
+import 'cart_screen.dart';
+import 'checkout_screen.dart';
 final _reviewFormKey = GlobalKey<FormState>();
-
 class ProductDetailsScreen extends StatefulWidget {
   final Product product;
 
-  const ProductDetailsScreen({super.key, required this.product});
+  const ProductDetailsScreen({
+    super.key,
+    required this.product,
+  });
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -19,12 +22,12 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   String? selectedSize;
-  final TextEditingController reviewController = TextEditingController();
+  String? selectedColor;
+final TextEditingController reviewController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // Load favorites when screen opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<FavoritesProvider>().loadFavorites();
     });
@@ -35,100 +38,92 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final product = widget.product;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(product.name),
-        actions: [
-          Consumer<FavoritesProvider>(
-            builder: (context, favoriteProvider, _) {
-              final isFavorite = favoriteProvider.isFavorite(product.id);
-              return IconButton(
-                icon: Icon(
-                  isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: isFavorite ? Colors.red : null,
-                ),
-                onPressed: () async {
-                  // Check if user is logged in
-                  final user = SupabaseService.client.auth.currentUser;
-                  if (user == null) {
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.info_outline,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                              SizedBox(width: 8),
-                              Flexible(
-                                child: Text(
-                                  'Please login to add favorites',
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                              ),
-                            ],
-                          ),
-                          duration: const Duration(seconds: 2),
-                          backgroundColor: const Color(0xFFACBDAA),
-                          behavior: SnackBarBehavior.floating,
-                          margin: const EdgeInsets.only(
-                            bottom: 16,
-                            left: 16,
-                            right: 16,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      );
-                    }
-                    return;
-                  }
+    appBar: AppBar(
+  title: Text(product.name),
+  actions: [
+    // 🛒 CART ICON
+    Consumer<CartProvider>(
+      builder: (context, cart, _) {
+        return Stack(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.shopping_bag_outlined),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const CartScreen(),
+                  ),
+                );
+              },
+            ),
 
-                  try {
-                    debugPrint(
-                        'ProductDetailsScreen: Toggling favorite for product: ${product.id}');
-                    await favoriteProvider.toggleFavorite(product.id);
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            favoriteProvider.isFavorite(product.id)
-                                ? 'Added to favorites ✓'
-                                : 'Removed from favorites',
-                          ),
-                          duration: const Duration(seconds: 1),
-                        ),
-                      );
-                    }
-                  } catch (e) {
-                    debugPrint('ProductDetailsScreen Error: $e');
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Error: $e'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
-                  }
-                },
-              );
-            },
+            // 🔴 BADGE
+            if (cart.items.isNotEmpty)
+              Positioned(
+                right: 6,
+                top: 6,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 18,
+                    minHeight: 18,
+                  ),
+                  child: Text(
+                    cart.items.length.toString(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    ),
+    Consumer<FavoritesProvider>(
+      builder: (_, favorites, __) {
+        final isFav = favorites.isFavorite(product.id);
+        return IconButton(
+          icon: Icon(
+            isFav ? Icons.favorite : Icons.favorite_border,
+            color: isFav ? Colors.red : null,
           ),
-        ],
-      ),
+          onPressed: () async {
+            final user = SupabaseService.client.auth.currentUser;
+            if (user == null) {
+              _showTopToast(
+                context,
+                'Please login first',
+                isError: true,
+              );
+              return;
+            }
+            await favorites.toggleFavorite(product.id);
+          },
+        );
+      },
+    ),
+  ],
+),
+
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _productImage(product),
-            _productInfo(product),
-            _sizesSection(product),
-            _buttonsSection(),
-            _descriptionSection(product),
+            _image(product),
+            _info(product),
+            _sizes(product),
+            _colors(product),
+            _buttons(product),
+            _description(product),
             _reviewsSection(),
           ],
         ),
@@ -136,20 +131,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Widget _productImage(Product product) {
-    return Stack(
-      children: [
-        Image.asset(
-          'assets/images/${product.imagePath}',
-          width: double.infinity,
-          height: 350,
-          fit: BoxFit.cover,
-        ),
-      ],
+  // ================= UI SECTIONS =================
+
+  Widget _image(Product product) {
+    return Image.asset(
+      'assets/images/${product.imagePath}',
+      height: 350,
+      width: double.infinity,
+      fit: BoxFit.cover,
     );
   }
 
-  Widget _productInfo(Product product) {
+  Widget _info(Product product) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -161,7 +154,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'EGP ${product.price.toInt()}',
+            'EGP ${product.price}',
             style: const TextStyle(fontSize: 18),
           ),
         ],
@@ -169,12 +162,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Widget _sizesSection(Product product) {
-    if (product.sizes.isEmpty) {
-      return const SizedBox();
-    }
-
-    final sizes = product.sizes;
+  Widget _sizes(Product product) {
+    if (product.sizes.isEmpty) return const SizedBox();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -188,15 +177,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
-            children: sizes.map((size) {
+            children: product.sizes.map((size) {
               final isSelected = selectedSize == size;
               return ChoiceChip(
                 label: Text(size),
                 selected: isSelected,
                 onSelected: (_) {
-                  setState(() {
-                    selectedSize = size;
-                  });
+                  setState(() => selectedSize = size);
                 },
               );
             }).toList(),
@@ -206,7 +193,38 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Widget _buttonsSection() {
+  Widget _colors(Product product) {
+    if (product.colors.isEmpty) return const SizedBox();
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Select Color',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: product.colors.map((color) {
+              final isSelected = selectedColor == color;
+              return ChoiceChip(
+                label: Text(color),
+                selected: isSelected,
+                onSelected: (_) {
+                  setState(() => selectedColor = color);
+                },
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buttons(Product product) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -214,38 +232,57 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFACBDAA),
-              foregroundColor: Colors.white,
+                  foregroundColor: Colors.black,
               minimumSize: const Size(double.infinity, 48),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
             ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CartScreen(),
-                ),
-              );
-            },
+             if (selectedSize == null || selectedColor == null) {
+    _showTopToast(
+      context,
+      'Please select size and color',
+      isError: true, // ⚠️ warning
+    );
+    return;
+  }
+              context.read<CartProvider>().addToCart(
+                    product: product,
+                    size: selectedSize!,
+                    color: selectedColor!,
+                  );
+
+
+  _showTopToast(
+    context,
+    'Product added to cart successfully',
+    isError: false, // ✅ success
+  );            },
             child: const Text('Add to Cart'),
           ),
           const SizedBox(height: 12),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
               backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
               minimumSize: const Size(double.infinity, 48),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
             ),
-            onPressed: () {
+          onPressed: () {
+  if (selectedSize == null || selectedColor == null) {
+    _showTopToast(
+      context,
+      'Please select size and color',
+      isError: true, // ⚠️ warning
+    );
+    return;
+  }
+              context.read<CartProvider>().addToCart(
+                    product: product,
+                    size: selectedSize!,
+                    color: selectedColor!,
+                  );
+
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const CheckoutScreen(),
-                ),
+                MaterialPageRoute(builder: (_) => const CartScreen()),
               );
             },
             child: const Text('Buy it Now'),
@@ -255,7 +292,80 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Widget _descriptionSection(Product product) {
+Widget _reviewsSection() {
+  return Padding(
+    padding: const EdgeInsets.all(16),
+    child: Form(
+      key: _reviewFormKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Reviews',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+
+          TextFormField(
+            controller: reviewController,
+            maxLines: 3,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please write a review';
+              }
+              if (value.length < 5) {
+                return 'Review must be at least 5 characters';
+              }
+              return null;
+            },
+            decoration: const InputDecoration(
+              hintText: 'Write your review...',
+              border: OutlineInputBorder(),
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          Row(
+            children: [
+             TextButton.icon(
+  icon: const Icon(
+    Icons.camera_alt,
+    color: Colors.black,
+  ),
+  label: const Text(
+    'Upload Photo',
+    style: TextStyle(color: Colors.black),
+  ),
+  onPressed: () {},
+),
+              const Spacer(),
+
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFACBDAA),
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () {
+                  if (_reviewFormKey.currentState!.validate()) {
+                    reviewController.clear();
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Review submitted')),
+                    );
+                  }
+                },
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+  Widget _description(Product product) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -277,66 +387,42 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Widget _reviewsSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Form(
-        key: _reviewFormKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Reviews',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  // ================= TOAST =================
+void _showTopToast(
+  BuildContext context,
+  String text, {
+  required bool isError,
+}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Row(
+        children: [
+          Icon(
+            isError ? Icons.warning_amber_rounded : Icons.check_circle,
+            color: isError ? Colors.orange : Colors.green,
+            size: 20,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(color: Colors.black),
             ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: reviewController,
-              maxLines: 3,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Please write a review';
-                }
-                if (value.length < 5) {
-                  return 'Review must be at least 5 characters';
-                }
-                return null;
-              },
-              decoration: const InputDecoration(
-                hintText: 'Write your review...',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                TextButton.icon(
-                  icon: const Icon(Icons.camera_alt),
-                  label: const Text('Upload Photo'),
-                  onPressed: () {},
-                ),
-                const Spacer(),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFACBDAA),
-                    foregroundColor: Colors.white,
-                  ),
-                  onPressed: () {
-                    if (_reviewFormKey.currentState!.validate()) {
-                      reviewController.clear();
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Review submitted')),
-                      );
-                    }
-                  },
-                  child: const Text('Submit'),
-                ),
-              ],
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
+      backgroundColor: Colors.white,
+      behavior: SnackBarBehavior.floating,
+      margin: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top + 12,
+        left: 16,
+        right: 16,
+      ),
+      duration: const Duration(seconds: 2),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
+  );
 }
+} 

@@ -1,19 +1,19 @@
 class CartItem {
-  final String id;
+  final String productId;
   final String name;
-  final double price;
+  final int price;
+  final String imagePath;
+  final String size;
   final String color;
   int quantity;
-  final String image;
 
   CartItem({
-    required this.id,
+    required this.productId,
     required this.name,
     required this.price,
+    required this.imagePath,
+    required this.size,
     required this.color,
-    required this.quantity,
-    required this.image,
-
+    this.quantity = 1,
   });
-
 }
