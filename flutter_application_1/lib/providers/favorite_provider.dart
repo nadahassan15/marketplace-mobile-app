@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
-import '../services/supabase_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../services/favorite_service.dart';
 
 class FavoritesProvider extends ChangeNotifier {
   final Set<String> _favoriteProductIds = {};
+  final FavoriteService _favoriteService = FavoriteService();
 
   Set<String> get favorites => _favoriteProductIds;
 
   Future<void> loadFavorites() async {
-    final user = SupabaseService.client.auth.currentUser;
+    final user = Supabase.instance.client.auth.currentUser;
     if (user == null) return;
 
-    final data = await SupabaseService.client
-        .from('favorites')
-        .select('product_id')
-        .eq('user_id', user.id);
+    final ids = await _favoriteService.getFavoriteProductIds(user.id);
 
     _favoriteProductIds
       ..clear()
-      ..addAll((data as List).map((e) => e['product_id'] as String));
+      ..addAll(ids);
 
     notifyListeners();
   }
@@ -27,25 +26,20 @@ class FavoritesProvider extends ChangeNotifier {
   }
 
   Future<void> toggleFavorite(String productId) async {
-    final user = SupabaseService.client.auth.currentUser;
+    final user = Supabase.instance.client.auth.currentUser;
     if (user == null) return;
 
-    if (isFavorite(productId)) {
-      await SupabaseService.client
-          .from('favorites')
-          .delete()
-          .match({
-            'user_id': user.id,
-            'product_id': productId,
-          });
-
+    if (_favoriteProductIds.contains(productId)) {
+      await _favoriteService.removeFavorite(
+        userId: user.id,
+        productId: productId,
+      );
       _favoriteProductIds.remove(productId);
     } else {
-      await SupabaseService.client.from('favorites').insert({
-        'user_id': user.id,
-        'product_id': productId,
-      });
-
+      await _favoriteService.addFavorite(
+        userId: user.id,
+        productId: productId,
+      );
       _favoriteProductIds.add(productId);
     }
 

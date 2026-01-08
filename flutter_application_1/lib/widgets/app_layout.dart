@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/customer/search_screen.dart';
 import 'package:flutter_application_1/screens/customer/cart_screen.dart';
+import 'package:flutter_application_1/screens/customer/favorite_screen.dart';
 
 class AppLayout extends StatelessWidget {
   final Widget body;
@@ -49,6 +50,11 @@ class AppLayout extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const CartScreen()),
+            );
+          } else if (index == 3) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const FavoriteScreen()),
             );
           }
         },
