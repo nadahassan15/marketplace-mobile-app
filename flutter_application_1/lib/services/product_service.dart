@@ -1,3 +1,4 @@
+import 'package:flutter_application_1/services/supabase_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/product_model.dart';
 
@@ -42,4 +43,15 @@ class ProductService {
       return true;
     }).toList();
   }
+  Future<List<Product>> searchProducts(String query) async {
+  final response = await SupabaseService.client
+      .from('products')
+      .select()
+      .ilike('name', '%$query%');
+
+  return (response as List)
+      .map((e) => Product.fromJson(e))
+      .toList();
+}
+
 }
