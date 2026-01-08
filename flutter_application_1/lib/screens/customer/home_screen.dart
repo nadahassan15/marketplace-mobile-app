@@ -248,7 +248,7 @@ class _MainMenuDrawerState extends State<_MainMenuDrawer> {
         },
       ),
       if (activeMenu == 'men') ..._subMenu('men'),
-      const _MenuItem(title: 'SHOP BY BRAND'),
+      // const _MenuItem(title: 'SHOP BY BRAND'),
     ];
   }
 
