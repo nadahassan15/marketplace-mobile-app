@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/product_model.dart';
-import '../../providers/product_provider.dart';
+import '../../models/productcustomer_model.dart';
+import '../../providers/productcustomer_provider.dart';
 import '../../providers/favorite_provider.dart';
 import '../../services/supabase_service.dart';
 import 'product_details_screen.dart';

@@ -5,7 +5,7 @@ import 'package:flutter_application_1/widgets/footer.dart';
 import 'package:flutter_application_1/screens/static/about_us_page.dart';
 import 'package:flutter_application_1/screens/customer/products_screen.dart';
 import 'package:provider/provider.dart';
-import '../../providers/product_provider.dart';
+import '../../providers/productcustomer_provider.dart';
 import '../../utils/responsive.dart';
 
 class HomeScreen extends StatelessWidget {

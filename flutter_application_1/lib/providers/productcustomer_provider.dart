@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/product_model.dart';
-import '../services/product_service.dart';
+import '../models/productcustomer_model.dart';
+import '../services/productcustomer_service.dart';
 
 class ProductProvider extends ChangeNotifier {
   final ProductService _service = ProductService();
@@ -9,7 +9,7 @@ class ProductProvider extends ChangeNotifier {
   List<Product> products = [];
   bool isLoading = false;
 
-  // 🔍 SEARCH
+  // SEARCH
   List<Product> searchResults = [];
   bool isSearching = false;
 
@@ -28,7 +28,7 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
-  // 🔍 SEARCH (stable – no flicker)
+  //SEARCH
   Future<void> searchProducts(String query) async {
     if (query.trim().isEmpty) {
       searchResults = [];
@@ -38,7 +38,6 @@ class ProductProvider extends ChangeNotifier {
     }
 
     try {
-      // show loader only if no previous results
       if (searchResults.isEmpty) {
         isSearching = true;
         notifyListeners();

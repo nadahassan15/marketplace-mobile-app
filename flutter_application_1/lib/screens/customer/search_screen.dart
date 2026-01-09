@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/product_provider.dart';
+import '../../providers/productcustomer_provider.dart';
 import '../customer/product_details_screen.dart';
 
 Timer? _debounce;
