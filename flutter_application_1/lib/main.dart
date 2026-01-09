@@ -8,6 +8,7 @@ import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
 import 'providers/favorite_provider.dart';
 import 'providers/product_provider.dart';
+import 'providers/review_provider.dart';
 
 // SCREENS
 import 'screens/customer/home_screen.dart';
@@ -24,26 +25,26 @@ Future<void> main() async {
     url: 'https://ptnxcsugztfcdyrjhbrj.supabase.co',
     anonKey: 'sb_publishable_hek7Qv_4MBnKC9cx1LRsZA_4ttCtIz9',
   );
-  //consistent theming across the app
-  MaterialApp(
-    theme: ThemeData(
-      primaryColor: const Color(0xFFACBDAA),
-      scaffoldBackgroundColor: Colors.white,
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFACBDAA),
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-      ),
-    ),
-    home: const HomeScreen(),
-  );
+  // //consistent theming across the app
+  // MaterialApp(
+  //   theme: ThemeData(
+  //     primaryColor: const Color(0xFFACBDAA),
+  //     scaffoldBackgroundColor: Colors.white,
+  //     appBarTheme: const AppBarTheme(
+  //       backgroundColor: Colors.white,
+  //       foregroundColor: Colors.black,
+  //       elevation: 0,
+  //     ),
+  //     elevatedButtonTheme: ElevatedButtonThemeData(
+  //       style: ElevatedButton.styleFrom(
+  //         backgroundColor: const Color(0xFFACBDAA),
+  //         foregroundColor: Colors.white,
+  //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+  //       ),
+  //     ),
+  //   ),
+  //   home: const HomeScreen(),
+  // );
 
   runApp(
     MultiProvider(
@@ -53,8 +54,10 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => OrdersProvider()),
         ChangeNotifierProvider(create: (_) => FavoritesProvider()),
         ChangeNotifierProvider(create: (_) => CheckoutProvider()),
-        ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider( create: (_) => ReviewProvider(),
+),
+        
       ],
       child: const MyApp(),
     ),
