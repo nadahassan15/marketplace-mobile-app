@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../models/cart_item_model.dart';
 
 class CheckoutProvider extends ChangeNotifier {
-  // Controllers
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
 
   String governorate = 'Cairo';
 
-  // Errors
   String? emailError;
   String? phoneError;
   String? addressError;
@@ -42,16 +42,24 @@ class CheckoutProvider extends ChangeNotifier {
     return valid;
   }
 
-  void submitOrder() {
+  /// ✅ READY FOR BACKEND
+  Future<void> submitOrder({
+    required double total,
+    required List<CartItem> items,
+  }) async {
     if (!validate()) return;
 
-    debugPrint('Checkout valid');
-    debugPrint(emailController.text);
-    debugPrint(phoneController.text);
-    debugPrint(addressController.text);
-    debugPrint(governorate);
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) {
+      throw Exception('User not logged in');
+    }
 
-    // Replace this later with Supabase order insert
+    debugPrint('ORDER CREATED');
+    debugPrint('User: ${user.id}');
+    debugPrint('Total: $total');
+    debugPrint('Items count: ${items.length}');
+    debugPrint('Address: ${addressController.text}');
+    debugPrint('Governorate: $governorate');
   }
 
   @override

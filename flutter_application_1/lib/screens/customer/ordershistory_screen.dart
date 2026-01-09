@@ -32,7 +32,7 @@ class OrdersHistoryScreen extends StatelessWidget {
                 final order = orders[index];
                 return _OrderCard(
                   orderId: order.id,
-                  date: order.date,
+date: order.createdAt.toString().split(' ').first,
                   total: order.total,
                   status: order.status,
                   onView: () {

@@ -6,6 +6,7 @@ class CartProvider extends ChangeNotifier {
   final List<CartItem> _items = [];
 
   List<CartItem> get items => _items;
+
   // ADD TO CART
   void addToCart({
     required Product product,
@@ -27,7 +28,7 @@ class CartProvider extends ChangeNotifier {
           productId: product.id,
           name: product.name,
           price: product.price,
-imagePath: 'assets/images/${product.imagePath}',
+          imagePath: 'assets/images/${product.imagePath}',
           size: size,
           color: color,
           quantity: 1,
@@ -37,16 +38,19 @@ imagePath: 'assets/images/${product.imagePath}',
 
     notifyListeners();
   }
+
   // REMOVE ITEM
   void removeFromCart(CartItem item) {
     _items.remove(item);
     notifyListeners();
   }
+
   // INCREASE QTY
   void increaseQty(CartItem item) {
     item.quantity++;
     notifyListeners();
   }
+
   // DECREASE QTY
   void decreaseQty(CartItem item) {
     if (item.quantity > 1) {
@@ -54,6 +58,7 @@ imagePath: 'assets/images/${product.imagePath}',
       notifyListeners();
     }
   }
+
   // TOTAL PRICE
   double get totalPrice {
     return _items.fold(
@@ -61,8 +66,28 @@ imagePath: 'assets/images/${product.imagePath}',
       (sum, item) => sum + (item.price * item.quantity),
     );
   }
-  // CART COUNT (BADGE)
+
+  // CART COUNT
   int get totalItems {
     return _items.fold(0, (sum, item) => sum + item.quantity);
+  }
+
+  //  IMPORTANT: convert cart to order items
+  List<Map<String, dynamic>> toOrderItems() {
+    return _items.map((item) {
+      return {
+        'product_id': item.productId,
+        'quantity': item.quantity,
+        'price': item.price,
+        'size': item.size,
+        'color': item.color,
+      };
+    }).toList();
+  }
+
+  //  clear cart after successful order
+  void clearCart() {
+    _items.clear();
+    notifyListeners();
   }
 }
