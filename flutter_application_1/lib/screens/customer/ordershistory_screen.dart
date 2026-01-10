@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../providers/order_provider.dart';
+import '../../theme/app_theme.dart';
 
 class OrdersHistoryScreen extends StatelessWidget {
   const OrdersHistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final ordersProvider = context.watch<OrdersProvider>();
+    // Get dummy data from OrdersProvider
+    final ordersProvider = OrdersProvider();
     final orders = ordersProvider.orders;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Orders History'), centerTitle: true),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          'Orders History',
+          style: TextStyle(color: Colors.black),
+        ),
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
       body: orders.isEmpty
           ? const Center(
               child: Text(
@@ -31,7 +42,12 @@ class OrdersHistoryScreen extends StatelessWidget {
                   total: order.total,
                   status: order.status,
                   onView: () {
-                    // 🔗 later: navigate to Order Details screen
+                    // TODO: Navigate to Order Details screen
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Viewing details for ${order.id}'),
+                      ),
+                    );
                   },
                 );
               },
@@ -76,8 +92,15 @@ class _OrderCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: Colors.grey.shade200),
         color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade100,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,14 +125,13 @@ class _OrderCard extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 8),
-
           // DATE
-          Text('Date: $date', style: const TextStyle(color: Colors.grey)),
-
+          Text(
+            'Date: $date',
+            style: const TextStyle(color: Colors.grey),
+          ),
           const SizedBox(height: 12),
-
           // TOTAL + VIEW ORDER
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,6 +145,7 @@ class _OrderCard extends StatelessWidget {
                 child: const Text(
                   'View Order Details',
                   style: TextStyle(
+                    color: AppTheme.primaryColor,
                     decoration: TextDecoration.underline,
                     fontWeight: FontWeight.w600,
                   ),

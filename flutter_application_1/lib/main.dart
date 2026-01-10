@@ -1,66 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'screens/auth/auth_gate.dart'; // Import the gate we just made
+import 'theme/app_theme.dart';
 
-// PROVIDERS
-import 'providers/checkout_provider.dart';
-import 'providers/cart_provider.dart';
-import 'providers/order_provider.dart';
-import 'providers/favorite_provider.dart';
-import 'providers/product_provider.dart';
-
-// SCREENS
-import 'screens/customer/home_screen.dart';
-import 'screens/customer/checkout_screen.dart';
-import 'screens/customer/cart_screen.dart';
-import 'screens/customer/ordershistory_screen.dart';
-import 'screens/customer/products_screen.dart';
-import 'screens/customer/product_details_screen.dart';
+//ahh el file bt3yy
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
     url: 'https://ptnxcsugztfcdyrjhbrj.supabase.co',
-    anonKey: 'sb_publishable_hek7Qv_4MBnKC9cx1LRsZA_4ttCtIz9',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0bnhjc3VnenRmY2R5cmpoYnJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU4OTc5MDksImV4cCI6MjA4MTQ3MzkwOX0.smtWt94cPbkZFwQK3v37igoA9KANwZC2SqUXFgu7mfQ',
   );
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => CheckoutProvider()),
-        ChangeNotifierProvider(create: (_) => CartProvider()),
-        ChangeNotifierProvider(create: (_) => OrdersProvider()),
-        ChangeNotifierProvider(create: (_) => FavoritesProvider()),
-        ChangeNotifierProvider(create: (_) => CheckoutProvider()),
-        ChangeNotifierProvider(create: (_) => CartProvider()),
-        ChangeNotifierProvider(create: (_) => ProductProvider()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Golocal',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-
-      // choose what to run
-      home: const HomeScreen(),
-      // home: const CheckoutScreen(),
-      // home: const CartScreen(),
-      //  home: const ProductsScreen(),
-      // home: const OrdersHistoryScreen(),
-      // home:const ProductDetailsScreen();
-      // home: ProductsScreen(),
+      title: 'Golokal',
+      theme: AppTheme.lightTheme,
+      // The AuthGate handles all the logic of where to go next
+      home: const AuthGate(), 
     );
   }
 }
